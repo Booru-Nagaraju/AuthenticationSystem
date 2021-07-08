@@ -1,0 +1,28 @@
+﻿using System;
+using AuthenticationSystem.Areas.Identity.Data;
+using AuthenticationSystem.Data;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+[assembly: HostingStartup(typeof(AuthenticationSystem.Areas.Identity.IdentityHostingStartup))]
+namespace AuthenticationSystem.Areas.Identity
+{
+    public class IdentityHostingStartup : IHostingStartup
+    {
+        public void Configure(IWebHostBuilder builder)
+        {
+            builder.ConfigureServices((context, services) => {
+                services.AddDbContext<AuthenticationSystem.Data.DbContext>(options =>
+                    options.UseSqlServer(
+                        context.Configuration.GetConnectionString("DbContextConnection")));
+
+                services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                    .AddEntityFrameworkStores<AuthenticationSystem.Data.DbContext>();
+            });
+        }
+    }
+}
